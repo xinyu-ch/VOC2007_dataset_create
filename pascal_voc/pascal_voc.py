@@ -81,6 +81,8 @@ class PASCALVOC07(object):
                         x2 = line_split[1 + i * 5 + 3]
                         y2 = line_split[1 + i * 5 + 4]
                         boxes.append((category, x1, y1, x2, y2))
+                        if x2 == '575' and y2 == '249':
+                            pass
                     sencod_image = first_image
                     continue
                 else:
@@ -99,12 +101,18 @@ class PASCALVOC07(object):
                 # create annotation file
                 self._create_annotation(image_idx, boxes)
                 boxes = []
-                if not len(line):
+                if line == '\n':
                     break
+                category = line_split[1 + i * 5 + 0]
+                x1 = line_split[1 + i * 5 + 1]
+                y1 = line_split[1 + i * 5 + 2]
+                x2 = line_split[1 + i * 5 + 3]
+                y2 = line_split[1 + i * 5 + 4]
+                boxes.append((category, x1, y1, x2, y2))
         return n
 
     def build(self, start_idx=1, verbose=True):
         self._build_voc_dir()
 
-        n = self._build_subset(start_idx, "trainval", self._trainval_anno, verbose)
-        self._build_subset(n + start_idx, "test", self._test_anno, verbose)
+        n = self._build_subset(start_idx, "test", self._test_anno, verbose)
+        self._build_subset(n, "trainval", self._trainval_anno, verbose)
